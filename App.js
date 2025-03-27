@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css'; // Updated reference to App.css
+import './App.css'; // Ensure your CSS file includes the new styles below.
 import bombImage from './bomb.svg'; // Import the bomb image
 
 const Minefield = () => {
@@ -98,31 +98,32 @@ const Minefield = () => {
         });
     };
 
-    // Click handler to reveal a cell and check for game over.
+    // Click handler to reveal a cell. If a bomb is clicked, reveal the entire board.
     const handleCellClick = (row, col) => {
-        // Do nothing if the game is over.
-        if (gameOver) return;
+        if (gameOver) return; // Lock further clicks when game is over
 
         setMinefield(prevMinefield => {
-            // Create a new copy of the minefield to maintain immutability
+            // Create a deep copy of the minefield for immutability.
             const newMinefield = prevMinefield.map(r => r.map(cell => ({ ...cell })));
             const cell = newMinefield[row][col];
             cell.isRevealed = true;
-            // If the revealed cell is blank, recursively reveal adjacent blank cells.
+
+            // If the cell is blank, recursively reveal adjacent blank cells.
             if (!cell.hasMine && cell.numMinesAdjacent === 0) {
                 revealAdjacentBlanks(newMinefield, row, col);
             }
+
+            // If a bomb is clicked, reveal the entire board.
+            if (cell.hasMine) {
+                for (let r = 0; r < newMinefield.length; r++) {
+                    for (let c = 0; c < newMinefield[0].length; c++) {
+                        newMinefield[r][c].isRevealed = true;
+                    }
+                }
+                setGameOver(true);
+            }
             return newMinefield;
         });
-
-        // Check if the clicked cell has a bomb.
-        if (minefield[row][col].hasMine) {
-            // Use a timeout to allow the UI to update (show the bomb cell) before alerting game over.
-            setTimeout(() => {
-                alert("Game Over");
-                setGameOver(true);
-            }, 0);
-        }
     };
 
     return (
@@ -151,6 +152,11 @@ const Minefield = () => {
                     </div>
                 ))}
             </div>
+            {gameOver && (
+                <div className="game-over-message">
+                    Game Over
+                </div>
+            )}
         </div>
     );
 };

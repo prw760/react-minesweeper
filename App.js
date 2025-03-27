@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import bombImage from './bomb.svg';
+
+const BOMB_COUNT = 10;
 
 const Minefield = () => {
     // Function to create an 8x9 minefield, initialize each cell, plant 10 mines, and calculate adjacent mines.
@@ -13,11 +15,12 @@ const Minefield = () => {
                 isRevealed: false,
                 hasMine: false,
                 numMinesAdjacent: 0,
+                isFlagged: false,
             }))
         );
 
         // Randomly assign 10 mines
-        let minesToPlant = 10;
+        let minesToPlant = BOMB_COUNT;
         while (minesToPlant > 0) {
             const randomRow = Math.floor(Math.random() * rows);
             const randomCol = Math.floor(Math.random() * cols);
@@ -68,6 +71,38 @@ const Minefield = () => {
 
     const [minefield, setMinefield] = useState(createMinefield());
     const [gameOver, setGameOver] = useState(false);
+    const [gameWon, setGameWon] = useState(false);
+    const [gameStarted, setGameStarted] = useState(false);
+    const [time, setTime] = useState(0);
+
+    // Timer effect: increments every second until gameOver becomes true.
+    useEffect(() => {
+        let interval;
+        if (gameStarted && !gameOver) {
+            interval = setInterval(() => {
+                setTime(prevTime => prevTime + 1);
+            }, 1000);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [gameStarted, gameOver]);
+
+    // Effect to check win condition: if flagged count equals bomb count and no bomb is revealed.
+    useEffect(() => {
+        let flaggedCount = 0;
+        let bombRevealed = false;
+        minefield.forEach(row => {
+            row.forEach(cell => {
+                if (cell.isFlagged) flaggedCount++;
+                if (cell.hasMine && cell.isRevealed) bombRevealed = true;
+            });
+        });
+        if (!bombRevealed && flaggedCount === BOMB_COUNT) {
+            setGameWon(true);
+            setGameOver(true); // Freeze board and stop timer
+        }
+    }, [minefield]);
 
     // Helper function to recursively reveal adjacent blank cells.
     const revealAdjacentBlanks = (field, row, col) => {
@@ -88,7 +123,7 @@ const Minefield = () => {
             const newCol = col + dy;
             if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
                 const adjacentCell = field[newRow][newCol];
-                if (!adjacentCell.isRevealed) {
+                if (!adjacentCell.isRevealed && !adjacentCell.isFlagged) {
                     adjacentCell.isRevealed = true;
                     if (!adjacentCell.hasMine && adjacentCell.numMinesAdjacent === 0) {
                         revealAdjacentBlanks(field, newRow, newCol);
@@ -98,23 +133,37 @@ const Minefield = () => {
         });
     };
 
-    // Click handler to reveal a cell. If a bomb is clicked, reveal the entire board.
+    // Format time (in seconds) to HH:MM:SS.
+    const formatTime = (timeInSeconds) => {
+        const hours = String(Math.floor(timeInSeconds / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((timeInSeconds % 3600) / 60)).padStart(2, '0');
+        const seconds = String(timeInSeconds % 60).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    };
+
+    // Left-click handler to reveal a cell.
     const handleCellClick = (row, col) => {
-        if (gameOver) return; // Lock further clicks when game is over
+        if (gameOver) return; // Freeze board
+
+        if (!gameStarted) {
+            setGameStarted(true);
+        }
 
         setMinefield(prevMinefield => {
-            // Create a deep copy of the minefield for immutability.
             const newMinefield = prevMinefield.map(r => r.map(cell => ({ ...cell })));
             const cell = newMinefield[row][col];
+
+            // Ignore left-clicks on flagged cells.
+            if (cell.isFlagged) return newMinefield;
+
             cell.isRevealed = true;
 
-            // If the cell is blank, recursively reveal adjacent blank cells.
             if (!cell.hasMine && cell.numMinesAdjacent === 0) {
                 revealAdjacentBlanks(newMinefield, row, col);
             }
 
-            // If a bomb is clicked, reveal the entire board.
             if (cell.hasMine) {
+                // Reveal the entire board if a bomb is clicked.
                 for (let r = 0; r < newMinefield.length; r++) {
                     for (let c = 0; c < newMinefield[0].length; c++) {
                         newMinefield[r][c].isRevealed = true;
@@ -126,23 +175,58 @@ const Minefield = () => {
         });
     };
 
+    // Right-click handler to toggle a flag on an unrevealed cell.
+    const handleCellRightClick = (event, row, col) => {
+        event.preventDefault();
+        if (gameOver) return;
+
+        setMinefield(prevMinefield => {
+            const newMinefield = prevMinefield.map(r => r.map(cell => ({ ...cell })));
+            const cell = newMinefield[row][col];
+            if (!cell.isRevealed) {
+                cell.isFlagged = !cell.isFlagged;
+            }
+            return newMinefield;
+        });
+    };
+
+    // Reset the game.
+    const handlePlayAgain = () => {
+        if (!gameOver) return;
+        setMinefield(createMinefield());
+        setGameOver(false);
+        setGameWon(false);
+        setGameStarted(false);
+        setTime(0);
+    };
+
+    // Compute flagged count for display (as a two-digit number)
+    const flaggedCount = String(minefield.flat().filter(cell => cell.isFlagged).length).padStart(2, '0');
+
     return (
         <div className="minesweeper-container">
             <div className="header">
                 <div className="header-title">Minesweeper</div>
                 <div className="control-panel">
-                    <div className="control-panel-text">Counter</div>
-                    <div className="control-panel-text">Play Again</div>
-                    <div className="control-panel-text">Timer</div>
+                    <div className="control-panel-text">{flaggedCount}</div>
+                    <button
+                        className="control-panel-button"
+                        onClick={handlePlayAgain}
+                        style={{ visibility: gameOver ? 'visible' : 'hidden' }}
+                    >
+                        Restart
+                    </button>
+                    <div className="control-panel-text">{formatTime(time)}</div>
                 </div>
             </div>
             <div className="minesweeper">
-                {minefield.map((row, rowIndex) => (
+                {minefield.map((rowArray, rowIndex) => (
                     <div className="row" key={rowIndex}>
-                        {row.map((cell, colIndex) => (
+                        {rowArray.map((cell, colIndex) => (
                             <div
                                 key={colIndex}
                                 onClick={() => handleCellClick(rowIndex, colIndex)}
+                                onContextMenu={(e) => handleCellRightClick(e, rowIndex, colIndex)}
                                 className={`cell ${cell.isRevealed ? 'revealed' : ''}`}
                             >
                                 {cell.isRevealed ? (
@@ -152,7 +236,13 @@ const Minefield = () => {
                                         cell.numMinesAdjacent === 0 ? '' : cell.numMinesAdjacent.toString()
                                     )
                                 ) : (
-                                    ''
+                                    cell.isFlagged ? (
+                                        <span style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
+                                            !
+                                        </span>
+                                    ) : (
+                                        ''
+                                    )
                                 )}
                             </div>
                         ))}
@@ -161,7 +251,7 @@ const Minefield = () => {
             </div>
             {gameOver && (
                 <div className="game-over-message">
-                    Game Over
+                    {gameWon ? 'You Win' : 'Game Over'}
                 </div>
             )}
         </div>

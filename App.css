@@ -56,8 +56,8 @@ body {
 .header {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 3.5vh 3.5vh; /* Reduced row heights */
-  grid-gap: 0; /* No spacer between rows */
+  grid-template-rows: 3.5vh 3.5vh;
+  grid-gap: 0;
   width: 100%;
 }
 
@@ -80,6 +80,7 @@ body {
   background-color: slategray;
 }
 
+/* All control panel texts are centered by default */
 .control-panel-text {
   display: flex;
   justify-content: center;
@@ -88,6 +89,12 @@ body {
   font-weight: normal;
   font-size: 12pt;
   color: white;
+}
+
+/* Left-justify the flag counter (first control-panel cell) */
+.control-panel .control-panel-text:first-child {
+  justify-content: flex-start;
+  padding-left: 5px;
 }
 
 /* Unchanged classes */
@@ -149,4 +156,24 @@ body {
   0% { opacity: 1; }
   50% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+/* Style for the Restart button */
+.control-panel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Courier Prime", monospace;
+  font-size: 12pt;
+  color: white;
+  background-color: gray;
+  border: 2px outset #ccc; /* 3D border effect */
+  cursor: pointer;
+  height: 60%;  /* Reduced height */
+}
+
+.control-panel-button:disabled {
+  background-color: lightgray;
+  border: 2px inset #eee;
+  cursor: not-allowed;
 }

@@ -73,14 +73,16 @@ body {
   color: white;
 }
 
+/* Control Panel */
 .control-panel {
   grid-column: 1 / span 3;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   background-color: slategray;
+  align-items: center;
 }
 
-/* All control panel texts are centered by default */
+/* Control Panel Text */
 .control-panel-text {
   display: flex;
   justify-content: center;
@@ -91,20 +93,27 @@ body {
   color: white;
 }
 
-/* Left-justify the flag counter (first control-panel cell) */
+/* Left-justify flag counter text */
 .control-panel .control-panel-text:first-child {
   justify-content: flex-start;
   padding-left: 5px;
 }
 
-/* Unchanged classes */
-.logo-image {
-  width: 18px;
-  height: 18px;
-}
-
-.reset-button {
-  background-color: tan;
+/* Style for the Restart (Play Again) button */
+.control-panel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Courier Prime", monospace;
+  font-size: 12pt;
+  color: white;
+  background-color: gray;
+  border: 2px outset #ccc; /* 3D border effect */
+  cursor: pointer;
+  height: 50%;         /* Reduced height to allow space below */
+  padding: 0 10px;
+  white-space: nowrap;
+  margin-top: 5px;     /* Adds extra spacing below the button */
 }
 
 /* Minesweeper Board Styling */
@@ -156,24 +165,4 @@ body {
   0% { opacity: 1; }
   50% { opacity: 0; }
   100% { opacity: 1; }
-}
-
-/* Style for the Restart button */
-.control-panel-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Courier Prime", monospace;
-  font-size: 12pt;
-  color: white;
-  background-color: gray;
-  border: 2px outset #ccc; /* 3D border effect */
-  cursor: pointer;
-  height: 60%;  /* Reduced height */
-}
-
-.control-panel-button:disabled {
-  background-color: lightgray;
-  border: 2px inset #eee;
-  cursor: not-allowed;
 }

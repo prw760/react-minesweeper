@@ -1,3 +1,4 @@
+/* Courier Prime Font Styles */
 .courier-prime-regular {
   font-family: "Courier Prime", monospace;
   font-weight: 400;
@@ -22,6 +23,7 @@
   font-style: italic;
 }
 
+/* Body Styling */
 body {
   margin: 0;
   height: 100vh;
@@ -32,6 +34,7 @@ body {
   background-color: gray;
 }
 
+/* Minesweeper Container */
 .minesweeper-container {
   padding: 1rem;
   display: flex;
@@ -49,11 +52,21 @@ body {
   box-shadow: 0 0 4px 6px darkred;
 }
 
-.title-area {
+/* New Header Layout */
+.header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 3.5vh 3.5vh; /* Reduced row heights */
+  grid-gap: 0; /* No spacer between rows */
   width: 100%;
-  text-align: center;
+}
+
+.header-title {
+  grid-column: 1 / span 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: slategray;
-  height: 7vh;
   font-family: "Courier Prime", monospace;
   font-weight: bold;
   font-size: 18pt;
@@ -61,22 +74,23 @@ body {
 }
 
 .control-panel {
+  grid-column: 1 / span 3;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  width: 100%;
-  text-align: center;
   background-color: slategray;
-  height: 7vh;
 }
 
 .control-panel-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: "Courier Prime", monospace;
-  font-weight: bold;
-  font-size: 18pt;
-  text-align: center;
+  font-weight: normal;
+  font-size: 12pt;
   color: white;
 }
 
+/* Unchanged classes */
 .logo-image {
   width: 18px;
   height: 18px;
@@ -86,6 +100,7 @@ body {
   background-color: tan;
 }
 
+/* Minesweeper Board Styling */
 .minesweeper {
   display: inline-block;
   background-color: black;
@@ -111,12 +126,14 @@ body {
   border: 1px solid #aaa;
 }
 
+/* Bomb Image Styling */
 .bomb-image {
   max-width: 100%;
   max-height: 100%;
   display: block;
 }
 
+/* Game Over Message Styling */
 .game-over-message {
   margin-top: 20px;
   font-family: "Courier Prime", monospace;
@@ -127,132 +144,9 @@ body {
   animation: blink 1s infinite;
 }
 
+/* Blinking Animation */
 @keyframes blink {
   0% { opacity: 1; }
   50% { opacity: 0; }
   100% { opacity: 1; }
 }
-
-
-
-
-
-
-/*
-
-.App {
-  text-align: center;
-  align-items: center;
-}
-
-.wrapper {
-  display: grid;
-  grid-template-columns: 3;
-  grid-template-rows: 2;
-  margin: 10% auto 0;
-  height: 30vh;
-  width: 15vw;
-  min-height: 600px;
-  min-width: 400px;
-  background-color: slategray;
-}
-
-.control-panel {
-  display: grid;
-  height: 20%;
-
-}
-
-.control-panel-row-1 {
-  grid-column: 1 / span 3;
-  background-color: lightgray;
-}
-
-.control-panel-title {
-  background-color: darkslategray;
-}
-
-.control-panel-row-2 {
-  background-color: gray;
-  column-count: 3;
-  width: 100%;
-}
-
-p {
-  vertical-align: top;
-  font-family: "Courier Prime", monospace;
-  font-size: 16pt;
-  color: white;
-  background-color: green;
-}
-
-.game-title {
-  font-family: "Courier Prime", monospace;
-  font-weight: bold;
-  font-size: 20pt;
-  text-align: center;
-}
-
-.App-logo {
-  height: 20px;
-}
-
-.flag-counter {
-
-}
-
-.reset-button {
-
-}
-
-.timer {
-
-}
-
-.field {
-  background-color: slategray;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  width: 20vh;
-  height: 20vh;
-}
-
-.cell {
-  background-color: #00FF00;
-  display: flex;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 5vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  width: 10vh;
-  height: 10vh;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-*/

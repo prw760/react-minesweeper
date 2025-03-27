@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './App.css'; // Ensure your CSS file includes the new styles below.
-import bombImage from './bomb.svg'; // Import the bomb image
+import './App.css';
+import bombImage from './bomb.svg';
 
 const Minefield = () => {
     // Function to create an 8x9 minefield, initialize each cell, plant 10 mines, and calculate adjacent mines.
@@ -128,7 +128,14 @@ const Minefield = () => {
 
     return (
         <div className="minesweeper-container">
-            <div className="title-area">Minesweeper</div>
+            <div className="header">
+                <div className="header-title">Minesweeper</div>
+                <div className="control-panel">
+                    <div className="control-panel-text">Counter</div>
+                    <div className="control-panel-text">Play Again</div>
+                    <div className="control-panel-text">Timer</div>
+                </div>
+            </div>
             <div className="minesweeper">
                 {minefield.map((row, rowIndex) => (
                     <div className="row" key={rowIndex}>
@@ -162,75 +169,3 @@ const Minefield = () => {
 };
 
 export default Minefield;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-import React from 'react';
-
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import './App.css';
-import logo from './bomb.svg';
-
-const Minesweeper = () => {
-
-    const createEmptyGrid = (rows, cols) => {
-        let grid = [];
-        for (let i = 0; i < rows; i++) {
-            let row = [];
-            for (let j = 0; j < cols; j++) {
-                row.push({ revealed: false, value: 0 });
-            }
-            grid.push(row);
-        }
-        return grid;
-    };
-
-    const flagCounter = 10;
-    const timerValue = "0:00"
-    const rows = 9;
-    const cols = 8;
-    const grid = createEmptyGrid(rows, cols);
-
-    return (
-        <div className="minesweeper-container">
-            <div className="title-area">Minesweeper&nbsp;<img src={String(logo)} alt="Minesweeper Logo" className="logo-image"/></div>
-            <div className="control-panel">
-                <div className="control-panel-text">{flagCounter}</div>
-                <div><input type="button" value="Reset" className="reset-button" /></div>
-                <div className="control-panel-text">{timerValue}</div>
-            </div>
-            <div className="minesweeper">
-                {grid.map((row, rowIndex) => (
-                    <div className="row" key={rowIndex}>
-                        {row.map((cell, colIndex) => (
-                            <div className="cell" key={colIndex}>
-                                {' Render cell content here'}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default Minesweeper;
-*/
